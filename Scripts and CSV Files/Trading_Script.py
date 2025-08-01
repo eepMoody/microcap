@@ -80,17 +80,16 @@ def process_portfolio(portfolio: pd.DataFrame, starting_cash: float) -> pd.DataF
     results.append(total_row)
 
     # === Save to CSV ===
-    file = f"Scripts and CSV Files/chatgpt_portfolio_update.csv"
+    file = "Scripts and CSV Files/chatgpt_portfolio_update.csv"
     df = pd.DataFrame(results)
 
     if os.path.exists(file):
         existing = pd.read_csv(file)
-        existing = existing[existing["Date"] != today] # Remove today's rows
-        print("rows for today already logged, not saving results to CSV...")
+        existing = existing[existing["Date"] != today]  # Remove today's rows
         df = pd.concat([existing, df], ignore_index=True)
 
     df.to_csv(file, index=False)
-    return chatgpt_portfolio
+    return portfolio
 
 # === Trade Logger (purely for stoplosses)===
 def log_sell(ticker: str, shares: float, price:float, cost:float, pnl:float, portfolio:pd.DataFrame) -> pd.DataFrame:
@@ -105,14 +104,14 @@ def log_sell(ticker: str, shares: float, price:float, cost:float, pnl:float, por
     }
     # ensure ticker is removed
     portfolio = portfolio[portfolio['ticker'] != ticker]
-    file = f"Scripts and CSV Files/chatgpt_trade_log.csv"
+    file = "Scripts and CSV Files/chatgpt_trade_log.csv"
     if os.path.exists(file):
         df = pd.read_csv(file)
         df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
     df.to_csv(file, index=False)
-    return chatgpt_portfolio
+    return portfolio
 
 # === Manual Buy Logger ===
 
@@ -215,7 +214,7 @@ If this is a mistake, enter 1. """)
 def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
 
     if isinstance(chatgpt_portfolio, pd.DataFrame):
-            chatgpt_portfolio = chatgpt_portfolio.to_dict(orient="records")
+        chatgpt_portfolio = chatgpt_portfolio.to_dict(orient="records")
     print(f"prices and updates for {today}")
     for stock in chatgpt_portfolio + [{"ticker": "^RUT"}] + [{"ticker": "IWO"}] + [{"ticker": "XBI"}]:
         ticker = stock['ticker']
@@ -234,7 +233,11 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
         print(f"{ticker} closing price: {price:.2f}")
         print(f"{ticker} volume for today: ${volume:,}")
         print(f"percent change from the day before: {percent_change:.2f}%")
-    chatgpt_df = pd.read_csv("Scripts and CSV Files/chatgpt_portfolio_update.csv")
+    update_path = "Scripts and CSV Files/chatgpt_portfolio_update.csv"
+    if not os.path.exists(update_path):
+        print("No portfolio history found. Run process_portfolio first.")
+        return
+    chatgpt_df = pd.read_csv(update_path)
 
     # Filter TOTAL rows and get latest equity
     chatgpt_totals = chatgpt_df[chatgpt_df['Ticker'] == 'TOTAL'].copy() 
@@ -271,7 +274,8 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
     print(f"Total Sortino Ratio over {n_days} days: {sortino_total:.4f}")
     print(f"Latest ChatGPT Equity: ${final_equity:.2f}")
 # Get S&P 500 data
-    spx = yf.download("^SPX", start="2025-06-27", end=final_date + pd.Timedelta(days=1), progress=False)
+    start_date = chatgpt_totals['Date'].min()
+    spx = yf.download("^SPX", start=start_date, end=final_date + pd.Timedelta(days=1), progress=False)
     spx = spx.reset_index()
 
 
@@ -290,14 +294,10 @@ You can however use the Internet and check current prices for potenial buys.""")
 
 # === Run Portfolio ===
 
-chatgpt_portfolio = [{'ticker': 'ABEO', 'shares': 6, 'stop_loss': 4.9, 'buy_price': 5.77, 'cost_basis': 34.62},
-                    {'ticker': 'IINN', 'shares': 14, 'stop_loss': 1.1, 'buy_price': 1.5, 'cost_basis': 21.0}, 
-                    {'ticker': 'ACTU', 'shares': 6, 'stop_loss': 4.89, 'buy_price': 5.75, 'cost_basis': 34.5},
-                    ]
-chatgpt_portfolio = pd.DataFrame(chatgpt_portfolio)
-cash = 22.32
+chatgpt_portfolio = pd.DataFrame([])
+cash = 500.0
 
-# See Using Scripts.md file for details
+# Add any manual buy/sell calls above if desired
 
-process_portfolio(chatgpt_portfolio, cash)
+chatgpt_portfolio = process_portfolio(chatgpt_portfolio, cash)
 daily_results(chatgpt_portfolio, cash)
