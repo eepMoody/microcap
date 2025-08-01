@@ -1,79 +1,23 @@
-# ChatGPT Micro-Cap Experiment
-Welcome to the repo behind my 6-month live trading experiment where ChatGPT manages a real-money micro-cap portfolio.
+# ChatGPT Micro-Cap Trading Bot
 
-# The Concept
-Everyday, I kept seeing the same ad about having an some A.I. pick undervalued stocks. It was obvious it was trying to get me to subscribe to some garbage, so I just rolled my eyes. 
-Then I started wondering, "How well would that actually work?".
+This repo contains a lightweight Python project that logs a micro-cap stock portfolio and generates daily reports. It was originally part of an experiment but has been cleaned for a fresh start.
 
-So, starting with just $100, I wanted to answer a simple but powerful question:
+## Quick start
 
-**Can powerful large language models like ChatGPT actually generate alpha (or at least make smart trading decisions) using real-time data?**
+1. Install Python 3.10+ and the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Open `Scripts and CSV Files/Trading_Script.py` and edit the bottom section if you want to start with any positions. By default the script starts with an empty portfolio and `$500` in cash.
+3. Run the trading script:
+   ```bash
+   python "Scripts and CSV Files/Trading_Script.py"
+   ```
+   This creates `chatgpt_portfolio_update.csv` and `chatgpt_trade_log.csv` inside the same folder.
+4. (Optional) Run `Generate_Graph.py` after you have some history to see a simple performance chart.
 
-## Each trading day:
+To keep the bot running indefinitely you can schedule the trading script using `cron` or your operating system's task scheduler.
 
-- I provide it trading data on the stocks in it's portfolio.
+## Disclaimer
 
-- Strict stop-loss rules apply.
-
-- Everyweek I allow it to use deep research to reevaluate it's account.
-
-- I track and publish performance data weekly on my blog. [SubStack Link](https://substack.com/@nathanbsmith?utm_source=edit-profile-page)
-
-  ## Research & Documentation
-
-- [Research Index](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Experiment%20Details/Deep%20Research%20Index.md)
-
-- [Q&A](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Experiment%20Details/Q%26A.md)
-
-- [Prompts](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Experiment%20Details/Prompts.md)
-
-- [Using Scripts](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Using%20Scripts.md)
-
--  [Markdown Research Summaries (MD)](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/tree/main/Weekly%20Deep%20Research%20(MD))
-- [Weekly Deep Research Reports (PDF)](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/tree/main/Weekly%20Deep%20Research%20(PDF))
-  
-# Performance Example (6/30 – 7/25)
-
----
-
-![Week 4 Performance](%286-30%20-%207-25%29%20Results.png)
-
----
-- Currently stomping on the Russell 2K.
-
-# Features of This Repo
-Live trading scripts — Used to evaluate prices and update holdings daily
-
-LLM-powered decision engine — ChatGPT picks the trades
-
-Performance tracking — CSVs with daily PnL, total equity, and trade history
-
-Visualization tools — Matplotlib graphs comparing ChatGPT vs Index
-
-Logs & trade data — Auto-saved logs for transparency
-
-# Why This Matters
-AI is being hyped across every industry, but can it really manage money without guidance?
-
-This project is an attempt to find out, with transparency, data, and a real budget.
-
-# Tech Stack
-Basic Python 
-
-Pandas + yFinance for data & logic
-
-Matplotlib for visualizations
-
-ChatGPT 4o for decision-making
-
-# Follow Along
-The experiment runs June 2025 to December 2025.
-Every trading day I will update the portfolio CSV file.
-If you feel inspired to do something simiar, feel free to use this as a blueprint.
-
-Updates are posted weekly on my blog — more coming soon!
-
-One final shameless plug: (https://substack.com/@nathanbsmith?utm_source=edit-profile-page)
-
-Find a mistake in the logs or have advice?
-Please Reach out here: nathanbsmith.business@gmail.com
+This project is provided for educational purposes only. It does **not** constitute financial or investment advice. Use it at your own risk.
